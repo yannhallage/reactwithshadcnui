@@ -12,7 +12,7 @@ const ScrollAreaDemo = ({ children }) => {
   return (
     <ScrollArea className="h-72 w-full rounded-md border">
       <div className="p-4">
-        <h4 className="mb-4 text-sm font-medium leading-none">Tags</h4>
+        <h4 className="mb-4 text-sm font-medium leading-none">Produits ajouter</h4>
         {
           children.length == 0 ? (
             <DivMessage />
