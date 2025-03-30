@@ -1,68 +1,110 @@
+"use client"
+
+import { useToast } from "@/hooks/use-toast.ts"
+
+
 import { Input } from "@/components/ui/input.tsx";
-import ScrollAreaDemo from './ScrollAreaDemo'
-import CardWithForm from './cardWithForm'
-import { Button } from '@/components/ui/button.tsx'
-import { useEffect, useState } from "react";
+import ScrollAreaDemo from "./ScrollAreaDemo";
+import CardWithForm from "./cardWithForm";
+import { Button } from "@/components/ui/button.tsx";
+import { useEffect, useRef, useState } from "react";
+import Toaster from '@/components/ui/toaster.tsx'
+
 
 const FormAchat = () => {
-    const [placeholder, setPlaceholder] = useState({
-        namePrduit: 'Nom du produit',
-        QuantitéProduit: 'Quantité',
-        Price: 'Prix',
+    const [placeholder] = useState({
+        nameProduit: "Nom du produit",
+        quantiteProduit: "Quantité",
+        prixProduit: "Prix",
     });
+    const { toast } = useToast()
+    const [afficheToats, setAfficheToats] = useState(false)
+    const [dataValue, setDataValue] = useState([])
+    const [valeurEnvoyer, setValeurEnvoyer] = useState()
 
+    const inputRef = useRef({});
 
+    const handleClick = () => {
+        const emptyFields = [];
+        const values = Object.keys(placeholder).reduce((acc, key) => {
+            const value = inputRef.current[key]?.value.trim(); // Trim pour éviter les espaces vides
+            if (value) {
+                acc[key] = value;
+            } else {
+                emptyFields.push(key);
+            }
+            return acc;
+        }, {});
+
+        if (emptyFields.length > 0) {
+            setAfficheToats(true);
+            toast({
+                variant: "destructive",
+                description: "Veuillez remplir tous les champs.",
+            });
+            EmptyFields()
+            return; // On arrête la fonction ici
+        }
+        const valeurEnvoyer = {
+            nameProduit: values.nameProduit,
+            quantiteProduit: values.quantiteProduit,
+            prixProduit: values.prixProduit
+        }
+        setDataValue([...dataValue , valeurEnvoyer])
+        EmptyFields()
+
+    };
+    
+    const EmptyFields = ()=>{
+        const values = Object.keys(placeholder).reduce((acc, key) => {
+            const value = inputRef.current[key].value = ''
+        },{});
+        return;
+    }
     return (
-        <section className='p-5'>
+        <section className="p-5">
             <div className="space-y-7">
-                <span className="md:text-4xl text-xl font-bold">
-                    Achats d'article
-                </span>
-
-                {/* form  */}
+                <span className="md:text-4xl text-xl font-bold">Achats d'article</span>
+                {/* Formulaire */}
                 <div className="grid md:grid-cols-2 grid-cols-1 gap-2 space-x-6">
                     <div className="space-y-3">
                         <div className="flex space-x-3">
                             {Object.entries(placeholder).map(([key, value]) => (
-                                <Input key={key} placeholder={value} />
+                                <Input
+                                    key={key}
+                                    placeholder={value}
+                                    ref={(el) => (inputRef.current[key] = el)}
+                                    name={key}
+                                />
                             ))}
-                            <Button
-                            >
-                                Enregistrer
-                            </Button>
+                            <Button onClick={handleClick}>Enregistrer</Button>
                         </div>
-                        <div className="">
+                        <div>
                             <ScrollAreaDemo />
                         </div>
                     </div>
-                    {/* pagnets */}
-
-                    <div className="">
-                        <DivPagnet />
-                    </div>
+                    {/* Pagnets */}
+                    <DivPagnet />
+                </div>
+                <div className="">
+                    <Toaster />
                 </div>
             </div>
         </section>
-    )
-}
-
-
-// pagnets 
+    );
+};
 
 const DivPagnet = () => {
     return (
-        <>
-            <div className="space-y-5">
-                <div className="">
-                    <span className="text-xl font-bold">Pagnets</span>
-                </div>
-                <div className="">
-                    <div className="">
-                        <CardWithForm />
-                    </div>
-                </div>
+        <div className="space-y-5">
+            <div>
+                <span className="text-xl font-bold">Pagnets</span>
             </div>
-        </>
-    )
-}
+            <div>
+                <CardWithForm />
+            </div>
+        </div>
+    );
+};
+
 export default FormAchat;
