@@ -43,7 +43,7 @@ const FormAchat = () => {
                 description: "Veuillez remplir tous les champs.",
             });
             EmptyFields()
-            return; // On arrête la fonction ici
+            return;
         }
         const valeurEnvoyer = {
             nameProduit: values.nameProduit,
@@ -54,7 +54,7 @@ const FormAchat = () => {
         EmptyFields()
 
     };
-    
+
     const EmptyFields = ()=>{
         const values = Object.keys(placeholder).reduce((acc, key) => {
             const value = inputRef.current[key].value = ''
@@ -80,7 +80,9 @@ const FormAchat = () => {
                             <Button onClick={handleClick}>Enregistrer</Button>
                         </div>
                         <div>
-                            <ScrollAreaDemo />
+                            <ScrollAreaDemo 
+                                children={dataValue}
+                            />
                         </div>
                     </div>
                     {/* Pagnets */}
