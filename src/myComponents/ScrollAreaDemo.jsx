@@ -4,11 +4,14 @@ import { Separator } from "@/components/ui/separator";
 import TooltipDemo from "./TooltipDemo";
 import DialogDemo from "./DialogDemo";
 import AlertDialogDemo from "./AlertDialogDemo";
-
-// const tags = Array.from({ length: 10 }, (_, i) => `Produit Prix Quantité ${10 - i}`);
+import { Context } from "../../context/apiContext"; 
+import { useContext,useState,useEffect } from "react"; 
 
 const ScrollAreaDemo = ({ children }) => {
-
+  const { apiData, setApiData } = useContext(Context);
+  if (children){
+    console.log(children)
+  }
   return (
     <ScrollArea className="h-72 w-full rounded-md border">
       <div className="p-4">

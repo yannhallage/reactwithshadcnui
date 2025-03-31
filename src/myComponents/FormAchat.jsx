@@ -1,17 +1,18 @@
 "use client"
 
 import { useToast } from "@/hooks/use-toast.ts"
-
-
 import { Input } from "@/components/ui/input.tsx";
 import ScrollAreaDemo from "./ScrollAreaDemo";
 import CardWithForm from "./cardWithForm";
 import { Button } from "@/components/ui/button.tsx";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Toaster from '@/components/ui/toaster.tsx'
+import { Context } from "../../context/apiContext";
 
 
 const FormAchat = () => {
+    const { addAchat, achats } = useContext(Context);
+    const [variableAdd,setVariableAdd] = useState(0)
     const [placeholder] = useState({
         nameProduit: "Nom du produit",
         quantiteProduit: "Quantité",
@@ -20,11 +21,12 @@ const FormAchat = () => {
     const { toast } = useToast()
     const [afficheToats, setAfficheToats] = useState(false)
     const [dataValue, setDataValue] = useState([])
-    const [valeurEnvoyer, setValeurEnvoyer] = useState()
+    const [valeurTotal, setValeurTotal] = useState(0)
 
     const inputRef = useRef({});
 
     const handleClick = () => {
+
         const emptyFields = [];
         const values = Object.keys(placeholder).reduce((acc, key) => {
             const value = inputRef.current[key]?.value.trim(); // Trim pour éviter les espaces vides
@@ -44,21 +46,22 @@ const FormAchat = () => {
             });
             EmptyFields()
             return;
-        }
-        const valeurEnvoyer = {
+        } 
+        
+        const valeurEnvoyers = {
             nameProduit: values.nameProduit,
             quantiteProduit: values.quantiteProduit,
-            prixProduit: values.prixProduit
+            prixProduit: parseInt(values.prixProduit)
         }
-        setDataValue([...dataValue , valeurEnvoyer])
-        EmptyFields()
-
+    
+        setDataValue([...dataValue, valeurEnvoyers])
+        EmptyFields()   
     };
 
-    const EmptyFields = ()=>{
+    const EmptyFields = () => {
         const values = Object.keys(placeholder).reduce((acc, key) => {
             const value = inputRef.current[key].value = ''
-        },{});
+        }, {});
         return;
     }
     return (
@@ -80,7 +83,7 @@ const FormAchat = () => {
                             <Button onClick={handleClick}>Enregistrer</Button>
                         </div>
                         <div>
-                            <ScrollAreaDemo 
+                            <ScrollAreaDemo
                                 children={dataValue}
                             />
                         </div>
